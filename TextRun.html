@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>文本滚动跑马灯</title>
+	<!-- <link rel="stylesheet" href="./TextRun.css"> -->
+	<style>
+		.msgBox { width: 250px !important;height: 30px !important;margin: 0 auto !important;overflow: hidden !important;position:relative;float: center;top: 50px;background:#107bb3;text-align: center;line-height: 0px;}
+		.msgBoxNotAnimate span{ float: none !important;}
+		.msgBoxAnimate { display: inline-block !important;white-space: nowrap !important;animation: 12s wordsLoop linear infinite normal;}
+		.msgBox span{ float: none !important;cursor:default !important;font-size: 16px !important;color: #FFFFFF !important;}
+		.msgBoxAnimate:hover{ animation-play-state:paused;-webkit-animation-play-state:paused;}
+		@keyframes wordsLoop {0% {transform: translateX(0px);-webkit-transform: translateX(0px);}100% {transform: translateX(-50%);-webkit-transform: translateX(-50%);}}
+		@-webkit-keyframes wordsLoop {0% {transform: translateX(0px);-webkit-transform: translateX(0px);}100% {transform: translateX(-50%);-webkit-transform: translateX(-50%);}}
+	</style>
+</head>
+<body>
+
+	<div class="msgBox" style="display:none;">
+	    <p class="msgBoxAnimate"> </p>
+	</div>
+
+</body>
+<!-- <script type="text/javascript" src="./TextRun.js"></script> -->
+<script>
+function msgStart(){
+    loadMsg(function(data){
+        var i = data.length;
+        while(i--){data[i].message===0 && data.splice(i,1);}
+        if(data.length != 0){ document.getElementsByClassName("msgBox")[0].style.display = "block";updateMsg(data); }
+    });
+}
+function loadMsg(callback) { callback( [{value:'123456789'},{value:'987654321'},{value:'999999999'}]);}
+
+function updateMsg(data){
+    var html = "";
+    var msgBoxAnimate = document.getElementsByClassName("msgBoxAnimate")[0];
+    while(msgBoxAnimate.hasChildNodes()){
+        msgBoxAnimate.removeChild(msgBoxAnimate.firstChild);
+    }
+    for(val of data){
+        msgBoxAnimate.appendChild(addElement("span"," "+val.value+" "));
+    }
+    if(data.length == 1){//只有一个身份的情况不用轮播
+        msgBoxAnimate.classList.remove("msgBoxAnimate");
+        msgBoxAnimate.classList.add("msgBoxNotAnimate");
+        // $msgBoxAnimate[0].style.webkitAnimationPlayState = "paused";
+    }else{
+        for(val of data){
+            msgBoxAnimate.appendChild(addElement("span"," "+val.value+" "));
+        }
+    }
+}
+
+function addElement(parent,children){
+    parent = document.createElement(parent);
+    children = document.createTextNode(children);
+    parent.appendChild(children);
+    return parent;
+}
+msgStart();
+setInterval(function(){ msgStart();}, 1000*60);
+</script>
+</html>
